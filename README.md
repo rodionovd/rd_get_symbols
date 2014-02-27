@@ -2,7 +2,11 @@ Loking for a way to private APIs?
 ======
 
 
-`rd_get_symbols` is a modern API to replace `nlist()`, so you can find any private (or public as well) symbol in any loaded executable and get an access to all the cool stuff Apple hides from us in its private frameworks.  
+`rd_get_symbols` a modern API aiming to replace Apple's `nlist()`, so you're able to find out any private or public symbol in any Mach-O executable.  
+Sandly, `dlopen()/dlsym()` are able to see only public–available symbols, which isn't acceptable when hacking private APIs up. `NSLookupSymbol*` has nothing to do here too, so `nlist()` is the last hope. But wait, it  
+
+ 1)  is unavailable for x86_64 executables *(what's wrong with you, Apple? It's 2014)*  
+ 2)  loades executable file from disk, instead of in-memory lookup if this executable was already loaded into a current process' address space.    
 
 ###### It works on both `i386` and `x86_64` binaries.
 
