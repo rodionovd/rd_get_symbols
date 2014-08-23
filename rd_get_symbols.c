@@ -162,7 +162,7 @@ static int _lookup_symbol_via_NSLookup(const char *image_name, const char *symbo
     if (strlen(image_name) == 0 || strlen(symbol_name) == 0) {
         KERN_INVALID_ARGUMENT;
     }
-
+    bool did_found_image = false;
     for (uint32_t i = 0; i < _dyld_image_count(); i++) {
         /**
          * This dyld API is deprecated as for 10.5-10.9.
@@ -172,6 +172,7 @@ static int _lookup_symbol_via_NSLookup(const char *image_name, const char *symbo
 #pragma clang diagnostic ignored "-Wdeprecated"
 
         if (0 == strcmp(image_name, _dyld_get_image_name(i))) {
+            did_found_image = true;
             NSSymbol target = NSLookupSymbolInImage(_dyld_get_image_header(i),
                 symbol_name, NSLOOKUPSYMBOLINIMAGE_OPTION_RETURN_ON_ERROR);
 
@@ -186,5 +187,5 @@ static int _lookup_symbol_via_NSLookup(const char *image_name, const char *symbo
         }
     }
 
-    return KERN_SUCCESS;
+    return (did_found_image) ? KERN_SUCCESS : KERN_FAILURE;
 }
